@@ -18,6 +18,10 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const SHEET_ID = process.env.SHEET_ID;
+const COLLECTION = "dataStore";
+const EMAIL = process.env.EMAIL;
+const POND_ID = "pond1";
+const SYSTEM_ID = "system1";
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 const sheets = google.sheets({ version: 'v4' });
@@ -33,19 +37,23 @@ app.get('/test', (req, res) => {
 
 const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
 
-    const timestamp = new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
+    const timestamp = new Date();
 
-    let datePart = timestamp.split(',')[0].replace(/\//g, '-');
-
+    let datePart = timestamp.getFullYear() + ":" + timestamp.getMonth() + ":" + timestamp.getDate();
+ 
     // Replace colons in the time with dashes
-    let timePart = timestamp.split(',')[1].trim().replace(" ", "");
+    let timePart = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
 
     // Combine the date and time parts with a double underscore
-    let newFormat = `${datePart}__${timePart}`;
-
-    const newFSdata = await db.doc(`sensor-data/${newFormat}`).create({
-        DO, Temp, pH, Conduct
-    });
+    let newFormat = `${datePart} ${timePart}`;
+    try {
+        const newFSdata = await db.doc(`${COLLECTION}/${EMAIL}/${POND_ID}/${SYSTEM_ID}/${newFormat}`).create({
+            DO, Temp, pH, Conduct
+        });
+        // console.log("Saved data ")
+    } catch (error) {
+        console.log("Error in storing: ", error);
+    }
 }
 
 var canSaveToFirestore = false;

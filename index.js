@@ -114,7 +114,7 @@ app.post('/sensor-data', async (req, res) => {
         if (canSaveToFirestore) {
             // console.log("being sent");
             await sendDataToFirestore(DO, Temp, pH, Conduct);
-            canSaveToFirestore = false; a
+            canSaveToFirestore = false;
         }
 
         console.log(`🚀 ${new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}:`, data.statusText)

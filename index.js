@@ -35,17 +35,23 @@ app.get('/test', (req, res) => {
     res.status(200).json({ message: 'Hello, world!' });
 });
 
+function getTimestampString() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Add leading zero for single-digit months
+    const day = String(date.getDate()).padStart(2, '0'); // Add leading zero for single-digit days
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}:${month}:${day} ${hours}:${minutes}:${seconds}`;
+}
+
 const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
 
     const timestamp = new Date();
 
-    let datePart = timestamp.getFullYear() + ":" + timestamp.getMonth() + ":" + timestamp.getDate();
-
-    // Replace colons in the time with dashes
-    let timePart = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
-
-    // Combine the date and time parts with a double underscore
-    let newFormat = `${datePart} ${timePart}`;
+    let newFormat = getTimestampString();
     try {
         await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).set({
             [newFormat]: {

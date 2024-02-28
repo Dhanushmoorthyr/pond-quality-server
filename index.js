@@ -3,23 +3,23 @@ const app = express();
 const cors = require('cors');
 const { google } = require('googleapis');
 require("dotenv").config()
-var admin = require("firebase-admin");
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 
-var serviceAccount = require("./pond-quality-5325c66d5988.json");
+const serviceAccount = require('./pond-quality-5325c66d5988.json');
+
+initializeApp({
+    credential: cert(serviceAccount)
+});
+
+const db = getFirestore();
 
 app.use(cors());
 app.use(express.json());
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://pond-quality-default-rtdb.firebaseio.com"
-});
-
-const db = admin.firestore();
-
 const SHEET_ID = process.env.SHEET_ID;
 const COLLECTION = "dataStore";
-const EMAIL = process.env.EMAIL;
+const EMAIL = "bharathrajnarashiman@gmail.com";
 const POND_ID = "pond1";
 const SYSTEM_ID = "system1";
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -48,7 +48,7 @@ const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
     let newFormat = `${datePart} ${timePart}`;
     try {
         const newFSdata = await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).cityRef.set({
-            newFormat:{
+            newFormat: {
                 "DO": DO,
                 "TEMP": Temp,
                 "PH": pH,

@@ -40,17 +40,23 @@ const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
     const timestamp = new Date();
 
     let datePart = timestamp.getFullYear() + ":" + timestamp.getMonth() + ":" + timestamp.getDate();
- 
+
     // Replace colons in the time with dashes
     let timePart = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
 
     // Combine the date and time parts with a double underscore
     let newFormat = `${datePart} ${timePart}`;
     try {
-        const newFSdata = await db.doc(`${COLLECTION}/${EMAIL}/${POND_ID}/${SYSTEM_ID}/${newFormat}`).create({
-            DO, Temp, pH, Conduct
-        });
-        // console.log("Saved data ")
+        const newFSdata = await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).cityRef.set({
+            newFormat:{
+                "DO": DO,
+                "TEMP": Temp,
+                "PH": pH,
+                "TDS": Conduct
+            }
+        }, { merge: true });
+
+        console.log("Data sent to Firestore");
     } catch (error) {
         console.log("Error in storing: ", error);
     }
@@ -64,18 +70,18 @@ const firestoreSaveInterval = setInterval(() => {
 }, 30 * 1000);
 
 app.post('/sensor-data', async (req, res) => {
-    const {DO, Temp, pH, Conduct} = (req.body);
+    const { DO, Temp, pH, Conduct } = (req.body);
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: './pond-quality-5325c66d5988.json',
             scopes: SCOPES
         });
         const client = await auth.getClient();
-        
+
         google.options({ auth: client });
 
         const timestamp = new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
-        
+
         const data = await sheets.spreadsheets.values.append({
             spreadsheetId: SHEET_ID,
             range: `Sheet1!A:E`,
@@ -96,7 +102,7 @@ app.post('/sensor-data', async (req, res) => {
 
         console.log(`🚀 ${new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}:`, data.statusText)
 
-        if (!data.status == 200) throw new Error("Error in Google Sheets update!") 
+        if (!data.status == 200) throw new Error("Error in Google Sheets update!")
         res.status(200).json({ message: 'Data saved!' });
 
     } catch (error) {

@@ -19,7 +19,7 @@ app.use(express.json());
 
 const SHEET_ID = process.env.SHEET_ID;
 const COLLECTION = "dataStore";
-const EMAIL = "bharathrajnarashiman@gmail.com";
+const EMAIL = process.env.EMAIL;
 const POND_ID = "pond1";
 const SYSTEM_ID = "system1";
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -47,8 +47,17 @@ const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
     // Combine the date and time parts with a double underscore
     let newFormat = `${datePart} ${timePart}`;
     try {
-        const newFSdata = await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).set({
-            newFormat: {
+        await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).set({
+            [newFormat]: {
+                "DO": DO,
+                "TEMP": Temp,
+                "PH": pH,
+                "TDS": Conduct
+            }
+        }, { merge: true });
+
+        await db.collection(COLLECTION).doc(EMAIL).set({
+            "system1": {
                 "DO": DO,
                 "TEMP": Temp,
                 "PH": pH,

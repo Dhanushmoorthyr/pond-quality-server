@@ -86,6 +86,7 @@ const firestoreSaveInterval = setInterval(() => {
 
 app.post('/sensor-data', async (req, res) => {
     const { DO, Temp, pH, Conduct } = (req.body);
+    console.log(`Data sent to Firestore ${DO, Temp, pH, Conduct}`);
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: './pond-quality-5325c66d5988.json',
@@ -108,11 +109,12 @@ app.post('/sensor-data', async (req, res) => {
                 ]
             }
         });
+        console.log(data.data);
 
         if (canSaveToFirestore) {
             // console.log("being sent");
             await sendDataToFirestore(DO, Temp, pH, Conduct);
-            canSaveToFirestore = false;
+            canSaveToFirestore = false; a
         }
 
         console.log(`🚀 ${new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}:`, data.statusText)

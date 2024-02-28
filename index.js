@@ -47,7 +47,7 @@ const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
     // Combine the date and time parts with a double underscore
     let newFormat = `${datePart} ${timePart}`;
     try {
-        const newFSdata = await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).cityRef.set({
+        const newFSdata = await db.collection(COLLECTION).doc(EMAIL).collection(POND_ID).doc(SYSTEM_ID).set({
             newFormat: {
                 "DO": DO,
                 "TEMP": Temp,

@@ -86,7 +86,7 @@ const firestoreSaveInterval = setInterval(() => {
 
 app.post('/sensor-data', async (req, res) => {
     const { DO, Temp, pH, Conduct } = (req.body);
-    console.log(`Data sent to Firestore ${DO, Temp, pH, Conduct}`);
+    console.log(`Data sent to Firestore : ` + req.body);
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: './pond-quality-5325c66d5988.json',

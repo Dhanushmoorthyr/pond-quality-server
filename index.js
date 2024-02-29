@@ -6,6 +6,8 @@ require("dotenv").config()
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 
+const PORT = process.env.PORT || 3000;
+
 const serviceAccount = require('./pond-quality-5325c66d5988.json');
 
 initializeApp({
@@ -129,6 +131,6 @@ app.post('/sensor-data', async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log('Server is listening on port 3000');
 });

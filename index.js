@@ -81,10 +81,12 @@ const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
 
 var canSaveToFirestore = false;
 
-const firestoreSaveInterval = setInterval(() => {
-    // console.log("initial");
-    if (!canSaveToFirestore) canSaveToFirestore = true;
-}, 30 * 1000);
+// const firestoreSaveInterval = setInterval(() => {
+//     // console.log("initial");
+//     if (!canSaveToFirestore) canSaveToFirestore = true;
+// }, 30 * 1000);
+
+var count = 0;
 
 app.post('/sensor-data', async (req, res) => {
     const { DO, Temp, pH, Conduct } = (req.body);
@@ -111,12 +113,12 @@ app.post('/sensor-data', async (req, res) => {
                 ]
             }
         });
-        console.log(data.data);
+        count++;
 
-        if (canSaveToFirestore) {
+        if (count == 5) {
             // console.log("being sent");
             await sendDataToFirestore(DO, Temp, pH, Conduct);
-            canSaveToFirestore = false;
+            count = 0;
         }
 
         console.log(`🚀 ${new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}:`, data.statusText)
@@ -127,7 +129,8 @@ app.post('/sensor-data', async (req, res) => {
     } catch (error) {
         console.log("🚀 ~ app.post ~ error:", error)
         res.status(500).send("Unable to save data");
-        clearInterval(firestoreSaveInterval);
+        // clearInterval(firestoreSaveInterval);
+        count = 0;
     }
 });
 

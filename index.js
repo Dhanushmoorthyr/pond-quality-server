@@ -115,7 +115,7 @@ app.post('/sensor-data', async (req, res) => {
         });
         count++;
 
-        if (count == 5) {
+        if (count == 2) {
             // console.log("being sent");
             await sendDataToFirestore(DO, Temp, pH, Conduct);
             count = 0;

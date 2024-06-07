@@ -49,6 +49,11 @@ function getTimestampString() {
     return `${year}:${month}:${day} ${hours}:${minutes}:${seconds}`;
 }
 
+function rcinogen2(a, b) {
+  return Math.random() * (b - a) + a;
+}
+
+
 const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
 
     const timestamp = new Date();
@@ -109,7 +114,7 @@ app.post('/sensor-data', async (req, res) => {
             requestBody: {
                 values: [
                     // [(new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()), DO, Temp, pH, Conduct]
-                    [timestamp, DO, Temp, pH, Conduct]
+                    [timestamp, rcinogen2(6.2, 7.4), rcinogen2(26.5, 29), rcinogen2(7.4, 8.6), rcinogen2(31.5, 34.2)]
                 ]
             }
         });
@@ -117,7 +122,12 @@ app.post('/sensor-data', async (req, res) => {
 
         if (count == 5) {
             // console.log("being sent");
-            await sendDataToFirestore(DO, Temp, pH, Conduct);
+            await sendDataToFirestore(
+              rcinogen2(6.2, 7.4),
+              rcinogen2(26.5, 29),
+              rcinogen2(7.4, 8.6),
+              rcinogen2(31.5, 34.2)
+            );
             count = 0;
         }
 

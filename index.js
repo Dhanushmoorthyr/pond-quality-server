@@ -107,6 +107,35 @@ app.post('/sensor-data', async (req, res) => {
 
         const timestamp = new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
 
+        // unattended raw data
+        sheets.spreadsheets.values
+          .append({
+            spreadsheetId: process.env.SHEET_RAW_ID,
+            range: `Sheet1!A:E`,
+            valueInputOption: "USER_ENTERED",
+            requestBody: {
+              values: [
+                [(new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()), DO, Temp, pH, Conduct]
+              ],
+            },
+          })
+          .then((res) => {
+            if (res.status != 200)
+              return console.log("Couldn't save actual data");
+            console.log(
+              `Raw firebase saved at ${new Date().toLocaleString(undefined, {
+                timeZone: "Asia/Kolkata",
+              })}:`,
+              res.statusText
+            );
+          }).catch(err => {
+            console.log(`Something screwed up when saving raw @${new Date().toLocaleString(undefined, {
+                timeZone: "Asia/Kolkata",
+              })}`)
+            console.log(err);
+          });
+        
+        // OG sheet to send data
         const data = await sheets.spreadsheets.values.append({
           spreadsheetId: SHEET_ID,
           range: `Sheet1!A:E`,

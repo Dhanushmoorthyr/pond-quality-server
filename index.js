@@ -108,25 +108,31 @@ app.post('/sensor-data', async (req, res) => {
         const timestamp = new Date().toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
 
         const data = await sheets.spreadsheets.values.append({
-            spreadsheetId: SHEET_ID,
-            range: `Sheet1!A:E`,
-            valueInputOption: "USER_ENTERED",
-            requestBody: {
-                values: [
-                    // [(new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()), DO, Temp, pH, Conduct]
-                    [timestamp, rcinogen2(6.2, 7.4), rcinogen2(26.5, 29), rcinogen2(7.4, 8.6), rcinogen2(31.5, 34.2)]
-                ]
-            }
+          spreadsheetId: SHEET_ID,
+          range: `Sheet1!A:E`,
+          valueInputOption: "USER_ENTERED",
+          requestBody: {
+            values: [
+              // [(new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()), DO, Temp, pH, Conduct]
+              [
+                timestamp,
+                rcinogen2(6.2, 7.4).toFixed(2),
+                rcinogen2(26.5, 29).toFixed(2),
+                rcinogen2(7.4, 8.6).toFixed(2),
+                rcinogen2(31.5, 34.2).toFixed(2),
+              ],
+            ],
+          },
         });
         count++;
 
-        if (count == 5) {
+        if (count == 2) {
             // console.log("being sent");
             await sendDataToFirestore(
-              rcinogen2(6.2, 7.4),
-              rcinogen2(26.5, 29),
-              rcinogen2(7.4, 8.6),
-              rcinogen2(31.5, 34.2)
+              rcinogen2(6.2, 7.4).toFixed(2),
+              rcinogen2(26.5, 29).toFixed(2),
+              rcinogen2(7.4, 8.6).toFixed(2),
+              rcinogen2(31.5, 34.2).toFixed(2)
             );
             count = 0;
         }

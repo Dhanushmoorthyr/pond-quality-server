@@ -39,12 +39,18 @@ app.get("/test", (req, res) => {
 
 function getTimestampString() {
   const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Add leading zero for single-digit months
-  const day = String(date.getDate()).padStart(2, "0"); // Add leading zero for single-digit days
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  // IST offset is +5:30 from UTC
+  const ISTOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+  const offsetDate = new Date(date.getTime() + ISTOffset);
+
+  // Extract the year, month, day, hours, minutes, and seconds in IST
+  const year = offsetDate.getUTCFullYear();
+  const month = String(offsetDate.getUTCMonth() + 1).padStart(2, "0"); // Add leading zero for single-digit months
+  const day = String(offsetDate.getUTCDate()).padStart(2, "0"); // Add leading zero for single-digit days
+  const hours = String(offsetDate.getUTCHours()).padStart(2, "0");
+  const minutes = String(offsetDate.getUTCMinutes()).padStart(2, "0");
+  const seconds = String(offsetDate.getUTCSeconds()).padStart(2, "0");
 
   return `${year}:${month}:${day} ${hours}:${minutes}:${seconds}`;
 }

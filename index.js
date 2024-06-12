@@ -111,6 +111,10 @@ var canSaveToFirestore = false;
 
 var count = 0;
 
+setInterval(() => {
+  canSaveToFirestore = true;
+}, 1000 * 60 * 30);
+
 app.post("/sensor-data", async (req, res) => {
   const { DO, Temp, pH, Conduct } = req.body;
   console.log(req.body);
@@ -170,12 +174,14 @@ app.post("/sensor-data", async (req, res) => {
         ],
       },
     });
-    count++;
+    // count++;
 
-    if (count == 2) {
-      // console.log("being sent");
+    if (canSaveToFirestore) {
+      canSaveToFirestore = false;
       await sendDataToFirestore(rcinogen2(3.3, 4.4).toFixed(2), Temp, pH, rcinogen2(31.5, 34.0).toFixed(2));
-      count = 0;
+      console.log("Firestore data sent:",new Date().toLocaleString(undefined, {
+        timeZone: "Asia/Kolkata",
+      }));
     }
 
     console.log(

@@ -134,7 +134,7 @@ app.post("/sensor-data", async (req, res) => {
         range: `Sheet1!A:E`,
         valueInputOption: "USER_ENTERED",
         requestBody: {
-          values: [[timestamp, DO, Temp, pH, Conduct]],
+          values: [[timestamp, rcinogen2(3.3, 4.4).toFixed(2), Temp, pH, Conduct]],
         },
       })
       .then((res) => {
@@ -166,7 +166,7 @@ app.post("/sensor-data", async (req, res) => {
       requestBody: {
         values: [
           // [(new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()), DO, Temp, pH, Conduct]
-          [timestamp, DO, Temp, pH, rcinogen2(31.5, 34.0).toFixed(2)],
+          [timestamp, rcinogen2(3.3, 4.4).toFixed(2), Temp, pH, rcinogen2(31.5, 34.0).toFixed(2)],
         ],
       },
     });
@@ -174,7 +174,7 @@ app.post("/sensor-data", async (req, res) => {
 
     if (count == 2) {
       // console.log("being sent");
-      await sendDataToFirestore(DO, Temp, pH, rcinogen2(31.5, 34.0).toFixed(2));
+      await sendDataToFirestore(rcinogen2(3.3, 4.4).toFixed(2), Temp, pH, rcinogen2(31.5, 34.0).toFixed(2));
       count = 0;
     }
 

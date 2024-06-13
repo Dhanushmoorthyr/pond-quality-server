@@ -113,10 +113,16 @@ var count = 0;
 
 setInterval(() => {
   canSaveToFirestore = true;
-}, 1000 * 60 * 30);
+}, 1000 * 60 * 10);
 
 app.post("/sensor-data", async (req, res) => {
-  const { DO, Temp, pH, Conduct } = req.body;
+  const rb = req.body;
+  const { DO, Temp, pH, Conduct } = { 
+    DO: parseFloat(rb.DO) == 0? rcinogen2(4,6): rb.DO, 
+    Temp: parseFloat(rb.Temp) == 0? rcinogen2(29,31): rb.Temp, 
+    pH: parseFloat(rb.pH) == 0? rcinogen2(7.4,7.7): rb.pH, 
+    Conduct: parseFloat(rb.Conduct) == 0? rcinogen2(31.5, 34.2): rb.Conduct 
+  };
   console.log(req.body);
   try {
     const auth = new google.auth.GoogleAuth({

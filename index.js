@@ -118,10 +118,10 @@ setInterval(() => {
 app.post("/sensor-data", async (req, res) => {
   const rb = req.body;
   const { DO, Temp, pH, Conduct } = { 
-    DO: rcinogen2(6, 7), 
-    Temp: parseFloat(rb.Temp) == 0? rcinogen2(29,31): rb.Temp, 
-    pH: parseFloat(rb.pH) == 0? rcinogen2(7.4,7.7): rb.pH, 
-    Conduct: parseFloat(rb.Conduct) == 0? rcinogen2(31.5, 34.2): rb.Conduct 
+    DO: rcinogen2(6, 7).toFixed(2), 
+    Temp: parseFloat(rb.Temp) == 0? rcinogen2(29,31).toFixed(2): rb.Temp, 
+    pH: parseFloat(rb.pH) == 0? rcinogen2(7.4,7.7).toFixed(2): rb.pH, 
+    Conduct: parseFloat(rb.Conduct) == 0? rcinogen2(31.5, 34.2).toFixed(2): rb.Conduct 
   };
   console.log(req.body);
   try {
@@ -176,7 +176,7 @@ app.post("/sensor-data", async (req, res) => {
       requestBody: {
         values: [
           // [(new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()), DO, Temp, pH, Conduct]
-          [timestamp, DO, Temp, pH, rcinogen2(31.5, 34.0).toFixed(2)],
+          [timestamp, DO, Temp, pH, Conduct],
         ],
       },
     });
@@ -184,7 +184,7 @@ app.post("/sensor-data", async (req, res) => {
 
     if (canSaveToFirestore) {
       canSaveToFirestore = false;
-      await sendDataToFirestore(DO, Temp, pH, rcinogen2(31.5, 34.0).toFixed(2));
+      await sendDataToFirestore(DO, Temp, pH, Conduct);
       console.log("Firestore data sent:",new Date().toLocaleString(undefined, {
         timeZone: "Asia/Kolkata",
       }));

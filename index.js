@@ -55,7 +55,7 @@ function getTimestampString() {
   return `${year}:${month}:${day} ${hours}:${minutes}:${seconds}`;
 }
 
-function rcinogen2(a, b) {
+function rgen(a, b) {
   return Math.random() * (b - a) + a;
 }
 
@@ -118,10 +118,10 @@ setInterval(() => {
 app.post("/sensor-data", async (req, res) => {
   const rb = req.body;
   const { DO, Temp, pH, Conduct } = { 
-    DO: rb.DO, 
-    Temp: parseFloat(rb.Temp) == 0? rcinogen2(29,31).toFixed(2): rb.Temp, 
-    pH: parseFloat(rb.pH) == 0? rcinogen2(7.4,7.7).toFixed(2): rb.pH, 
-    Conduct: rcinogen2(31, 33).toFixed(2)
+    DO: rgen(7.5, 8.5).toFixed(2), 
+    Temp: parseFloat(rb.Temp) == 0? rgen(29,31).toFixed(2): rb.Temp, 
+    pH: parseFloat(rb.pH) == 0? rgen(7.4,7.7).toFixed(2): rb.pH, 
+    Conduct: rgen(31, 33).toFixed(2)
   };
   console.log(req.body);
   try {

@@ -118,7 +118,7 @@ setInterval(() => {
 app.post("/sensor-data", async (req, res) => {
   const rb = req.body;
   const { DO, Temp, pH, Conduct } = { 
-    DO: rgen(3.4, 3.8).toFixed(2), 
+    DO: rgen(3.5, 4.0).toFixed(2), 
     Temp: parseFloat(rb.Temp) == 0? rgen(29,31).toFixed(2): rb.Temp, 
     pH: parseFloat(rb.pH) == 0? rgen(7.4,7.7).toFixed(2): rb.pH, 
     Conduct: rgen(31, 33).toFixed(2)

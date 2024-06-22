@@ -8,10 +8,12 @@ const { getFirestore } = require("firebase-admin/firestore");
 
 const PORT = process.env.PORT || 3000;
 
-const serviceAccount = require("./pond-quality-5325c66d5988.json");
-
 initializeApp({
-  credential: cert(serviceAccount),
+  credential: cert({
+    projectId: process.env.PROJECT_ID,
+    clientEmail: process.env.CLIENT_EMAIL,
+    privateKey: process.env.RSA.replace(/\\n/g, '\n')
+  }),
 });
 
 const db = getFirestore();

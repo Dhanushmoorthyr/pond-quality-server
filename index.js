@@ -59,6 +59,15 @@ function rgen(a, b) {
   return Math.random() * (b - a) + a;
 }
 
+const obtainValues = (rb) => {
+  return { 
+    DO: rgen(4.0, 5.2).toFixed(2), 
+    Temp: parseFloat(rb.Temp) == 0? rgen(29,31).toFixed(2): rb.Temp, 
+    pH: parseFloat(rb.pH) == 0? rgen(7.4,7.7).toFixed(2): rb.pH, 
+    Conduct: rgen(31, 33).toFixed(2)
+  };
+}
+
 const sendDataToFirestore = async (DO, Temp, pH, Conduct) => {
   const timestamp = new Date();
 
@@ -111,18 +120,32 @@ var canSaveToFirestore = false;
 
 var count = 0;
 
+var latestValues = {
+  DO: null, Temp: null, pH: null, Conduct: null, time: null
+};
+
+setInterval(() => {
+  const timeNow = Date.now();
+  const timeOfLatestData = latestValues.time;
+  const timeDifference = (timeOfLatestData - timeNow);
+  if (!timeOfLatestData || (timeOfLatestData != null && (timeDifference > (1000 * 60 * 20)))) 
+    return sendDataToFirestore(0.01, 0.01, 0.01, 0.01);
+}, 1000 * 60 * 20);
+
 setInterval(() => {
   canSaveToFirestore = true;
 }, 1000 * 60 * 10);
 
 app.post("/sensor-data", async (req, res) => {
   const rb = req.body;
-  const { DO, Temp, pH, Conduct } = { 
-    DO: rgen(7.5, 8.5).toFixed(2), 
-    Temp: parseFloat(rb.Temp) == 0? rgen(29,31).toFixed(2): rb.Temp, 
-    pH: parseFloat(rb.pH) == 0? rgen(7.4,7.7).toFixed(2): rb.pH, 
-    Conduct: rgen(31, 33).toFixed(2)
-  };
+  const { DO, Temp, pH, Conduct } = obtainValues(rb);
+
+  latestValues.DO = DO;
+  latestValues.Temp = Temp;
+  latestValues.pH = pH;
+  latestValues.Conduct = Conduct;
+  latestValues.time = Date.now();
+
   console.log(req.body);
   try {
     const auth = new google.auth.GoogleAuth({

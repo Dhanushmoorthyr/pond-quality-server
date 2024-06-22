@@ -151,8 +151,9 @@ app.post("/sensor-data", async (req, res) => {
   console.log(req.body);
   try {
     const auth = new google.auth.GoogleAuth({
-      keyFile: "./pond-quality-5325c66d5988.json",
+      // keyFile: "./pond-quality-5325c66d5988.json",
       scopes: SCOPES,
+      credentials: { projectId: process.env.PROJECT_ID, client_email: process.env.CLIENT_EMAIL, private_key: process.env.RSA.replace(/\\n/g, '\n') }
     });
     const client = await auth.getClient();
 

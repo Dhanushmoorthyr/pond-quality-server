@@ -63,7 +63,7 @@ function rgen(a, b) {
 
 const obtainValues = (rb) => {
   return { 
-    DO: rgen(3.9, 4.8).toFixed(2), 
+    DO: rgen(3.6, 4.5).toFixed(2), 
     Temp: rgen(29.4,31.3).toFixed(2), 
     pH: parseFloat(rb.pH) == 0? rgen(7.4,7.7).toFixed(2): rb.pH, 
     Conduct: rgen(31, 33).toFixed(2)
